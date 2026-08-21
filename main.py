@@ -6,6 +6,7 @@ import os
 def init_db():
     db_dir = os.environ.get("FLET_APP_DATA", ".")
     db_path = os.path.join(db_dir, "My.db")
+    print(f"\n---> THE REAL DB IS HIDING HERE: {os.path.abspath(db_path)}\n")
 
     conn = sqlite3.connect(db_path, check_same_thread=False)
     cursor = conn.cursor()
@@ -93,10 +94,34 @@ def main(page: ft.Page):
                 for row in records
             ],
         )
+    #sql-qury total
+    def get_total():
+        cursor = conn.cursor()
+        conn.execute("SELECT SUM(Amount) FROM earnings")
+        row = cursor.fetchone()
+        if row is None:
+            return 0.0
+        
+        total = row[0]
+        
+        if total is None:
+            return 0.0
+        
+        return float(total)
+    
     # 2. Home Dashboard Screen
     def show_home(e=None):
+        total_exp = get_total()
+
         body_container.content = ft.Column(
             controls=[
+                #total exp display table
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Text(f"Total Expenses: - ₹{total_exp:,.2f}", size=24, weight=ft.FontWeight.BOLD, color=ft.Colors.RED_400),
+                    ],
+                ),
                 ft.Row(
                     alignment=ft.MainAxisAlignment.CENTER,
                     controls=[
