@@ -27,7 +27,7 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Build APK
-        run: yes | flet build apk
+        run: yes | flet build apk --product "Every Penny" --org "com.param.everypenny"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
